@@ -2,11 +2,18 @@
 
 set -e -u
 
-sandbox=$HOME/sandbox
-LOOP=false
+sandbox=${SANDBOX:-$HOME/sandbox}
+LOOP=${LOOP:-false}
+SIGNED=${SIGNED:-false}
+SLEEP=${SLEEP:-60}
+
+# A place to put command line argument which will be run *after* updating
+declare -a COMMAND
+COMMAND=('')
+KEYS="${KEYS:-}"
 
 update-sandbox() {
-    git fetch --all
+    git -C "$SANDBOX" pull
 }
 
 ensure-ssh-key() {
@@ -17,7 +24,7 @@ ensure-ssh-key() {
 
 
 clone-sandbox() {
-    git clone $SOURCE $sandbox
+    git clone $SOURCE $SANDBOX
 }
 
 check-signature() {
@@ -36,11 +43,12 @@ check-signature() {
 }
 
 copy-files() {
-    rsync -rav --delete --exclude '.git' ./ $TARGET/
+    rsync -rav --delete --exclude '.git' "$SANDBOX/" "$TARGET/"
 }
 
 runonce() {
-    if [ -d $sandbox/.git ] ; then
+    startingCommit=$(gitcommit)
+    if [ -d $SANDBOX/.git ] ; then
 	update-sandbox
     else
 	if clone-sandbox ; then
@@ -52,13 +60,37 @@ runonce() {
 	fi
     fi
 
+    postupdateCommit=$(gitcommit)
+
+    if [ "$startingCommit" == "$postupdateCommit" ] ; then
+	return
+    fi
+
     if check-signature; then
 	copy-files
+	runcommand
+    fi
+}
+
+gitcommit() {
+	if [ ! -d "$SANDBOX/.git" ] ; then
+	    echo ""
+	else
+	    git -C "$SANDBOX" rev-parse HEAD
+	fi
+}
+
+runcommand() {
+    if [ -n "${COMMAND[*]}" ] ; then
+	(
+	    cd "$SANDBOX"
+	    eval "${COMMAND[@]}"
+	)
     fi
 }
 
 import-gpg-keys() {
-    for f in $KEYS/* $HOME/key.asc; do
+    for f in $KEYS/*.asc $HOME/key.asc; do
 	if [ -f $f ] ; then
 	    gpg --import $f
 	fi
@@ -74,9 +106,9 @@ loop() {
 usage() {
 
     cat <<EOF
-usage:  docker run deweysasser/git-updater [options]
+usage:  docker run deweysasser/git-updater [options] [commands]
    or 
-        docker run -d deweysasser/git-updater  [options] -loop
+        docker run -d deweysasser/git-updater  [options] -loop [commands]
    or 
         docker run -it deweysasser/git-updater  -shell [args...]
 
@@ -90,10 +122,14 @@ options are:
 -target TARGET -- set the target dir to TARGET.  Currently '$TARGET'.
 -keys KEYS -- set the keys dir to KEYS.  Currently '$KEYS'.
 -sleep SLEEP -- number of seconds to sleep between polls.  Currently '$SLEEP'.
+-standbox SANDBOX -- the location of the git sandbox used to poll
 
 You may also specify each of SOURCE, TARGET and KEYS as environment
 variables as well as set the value of SIGNED to 'false' (to avoid
 signatures) or anything else (to check signatures)
+
+You may optionally specificy a COMMAND to run after the update (and
+signature check, if any) is successful.
 
 EOF
 }
@@ -107,8 +143,10 @@ while [ -n "$*" ] ; do
 	-source) SOURCE="$2"; shift;;
 	-target) TARGET="$2"; shift;;
 	-sleep) SLEEP="$2"; shift;;
+	-sandbox) SANDBOX="$2"; shift;;
 	-keys) KEYS="$2"; shift;;
-	*) usage;;
+	-*) usage; exit 1;;
+	*) COMMAND+=("$1");;
     esac
     shift
 done
