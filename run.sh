@@ -7,6 +7,8 @@ SANDBOX=${SANDBOX:-$HOME/sandbox}
 LOOP=${LOOP:-false}
 SIGNED=${SIGNED:-false}
 SLEEP=${SLEEP:-60}
+DIR=${DIR:-.}
+BRANCH=${BRANCH:-master}
 
 # A place to put command line argument which will be run *after* updating
 declare -a COMMAND
@@ -25,7 +27,7 @@ ensure-ssh-key() {
 
 
 clone-sandbox() {
-    git clone "$SOURCE" "$SANDBOX"
+    git clone -b "$BRANCH" "$SOURCE" "$SANDBOX"
 }
 
 check-signature() {
@@ -33,7 +35,7 @@ check-signature() {
 	return 0
     fi
 	
-    tagname=$(eval git -C "$SANDBOX" describe --abbrev=0 --tags origin/master | grep release | head -n 1)
+    tagname=$(eval git -C "$SANDBOX" describe --abbrev=0 --tags origin/${BRANCH} | grep release | head -n 1)
     echo "Checking tag name $tagname"
     if [ -z "$tagname" ] ; then
 	echo "No tag found"
@@ -44,7 +46,7 @@ check-signature() {
 }
 
 copy-files() {
-    rsync -rav --delete --exclude '.git' "$SANDBOX/" "$TARGET/"
+    rsync -rav --delete --exclude '.git' "$SANDBOX/${DIR}/" "$TARGET/"
 }
 
 runonce() {
@@ -129,6 +131,8 @@ options are:
 -keys KEYS -- set the keys dir to KEYS.  Currently '$KEYS'.
 -sleep SLEEP -- number of seconds to sleep between polls.  Currently '$SLEEP'.
 -standbox SANDBOX -- the location of the git sandbox used to poll
+-branch BRANCH -- branch of the git repository to clone and/or examine for signed tags
+-dir DIR -- directory within the repositor to copy to the TARGET
 
 You may also specify each of SOURCE, TARGET and KEYS as environment
 variables as well as set the value of SIGNED to 'false' (to avoid
@@ -150,6 +154,8 @@ while [ -n "$*" ] ; do
 	-target) TARGET="$2"; shift;;
 	-sleep) SLEEP="$2"; shift;;
 	-sandbox) SANDBOX="$2"; shift;;
+	-branch) BRANCH="$2"; shift;;
+	-dir) DIR="$2"; shift;;
 	-keys) KEYS="$2"; shift;;
 	--) shift; COMMAND+=("$@"); break;;
 	-*) usage; exit 1;;
