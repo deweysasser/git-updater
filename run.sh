@@ -84,8 +84,9 @@ gitcommit() {
 runcommand() {
     if [ -n "${COMMAND[*]}" ] ; then
 	(
-	    cd "$SANDBOX"
-	    eval "${COMMAND[@]}"
+	    cd "$TARGET"
+	    # Ignore any errors from here
+	    eval "${COMMAND[@]}" || true
 	)
     fi
 }
