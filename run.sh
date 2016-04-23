@@ -147,6 +147,7 @@ while [ -n "$*" ] ; do
 	-sleep) SLEEP="$2"; shift;;
 	-sandbox) SANDBOX="$2"; shift;;
 	-keys) KEYS="$2"; shift;;
+	--) shift; COMMAND+=("$@"); break;;
 	-*) usage; exit 1;;
 	*) COMMAND+=("$1");;
     esac
