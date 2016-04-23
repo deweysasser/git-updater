@@ -24,7 +24,7 @@ ensure-ssh-key() {
 
 
 clone-sandbox() {
-    git clone $SOURCE $SANDBOX
+    git clone "$SOURCE" "$SANDBOX"
 }
 
 check-signature() {
@@ -49,7 +49,7 @@ copy-files() {
 runonce() {
     date
     startingCommit=$(gitcommit)
-    if [ -d $SANDBOX/.git ] ; then
+    if [ -d "$SANDBOX/.git" ] ; then
 	update-sandbox
     else
 	if clone-sandbox ; then
@@ -63,7 +63,7 @@ runonce() {
 
     postupdateCommit=$(gitcommit)
 
-    if [ "$startingCommit" == "$postupdateCommit" ] ; then
+    if [ "$startingCommit" == "$postupdateCommit" -a -d "$TARGET" ] ; then
 	return
     fi
 
@@ -164,12 +164,12 @@ if [ -z "${TARGET:-}" ] ; then
     exit 1
 fi
 
-mkdir -p $SANDBOX $TARGET
+mkdir -p "$SANDBOX" $(dirname "$TARGET")
 
 import-gpg-keys
 ensure-ssh-key
 
-cd $SANDBOX
+cd "$SANDBOX"
 
 if $LOOP ; then
     loop
