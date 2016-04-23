@@ -11,26 +11,33 @@ application how to understand GIT.
 Usage
 =====
 
-     usage:  docker run deweysasser/git-updater [options]
-        or
-             docker run -d deweysasser/git-updater  [options] -loop
-        or
-             docker run -it deweysasser/git-updater  -shell [args...]
-     
-     options are:
-     
-     -help -- this text
-     -shell -- invoke a bash shell with the remaining arguments
-     -loop -- loop continously
-     -source SOURCE -- set the source dir to SOURCE.  Currently foo'foo'
-     -signed -- if set, copy files from the latest signed tag.  Currently 'false'.
-     -target TARGET -- set the target dir to TARGET.  Currently '/volume'.
-     -keys KEYS -- set the keys dir to KEYS.  Currently '/keys'.
-     -sleep SLEEP -- number of seconds to sleep between polls.  Currently '300'.
-          
-     You may also specify each of SOURCE, TARGET and KEYS as environment
-     variables as well as set the value of SIGNED to 'false' (to avoid
-     signatures) or anything else (to check signatures)
+    usage:  docker run deweysasser/git-updater [options] [commands]
+       or 
+            docker run -d deweysasser/git-updater  [options] -loop [commands]
+       or 
+            docker run -it deweysasser/git-updater  -shell [args...]
+    
+    options are:
+    
+    -help -- this text
+    -shell -- invoke a bash shell with the remaining arguments
+    -loop -- loop continously
+    -source SOURCE -- set the source dir to SOURCE.  Currently empty
+    -signed -- if set, copy files from the latest signed tag.  Currently 'false'.
+    -target TARGET -- set the target dir to TARGET.  Currently ''.
+    -keys KEYS -- set the keys dir to KEYS.  Currently ''.
+    -sleep SLEEP -- number of seconds to sleep between polls.  Currently '60'.
+    -standbox SANDBOX -- the location of the git sandbox used to poll
+    -branch BRANCH -- branch of the git repository to clone and/or examine for signed tags
+    -dir DIR -- directory within the repositor to copy to the TARGET
+    
+    You may also specify each of SOURCE, TARGET and KEYS as environment
+    variables as well as set the value of SIGNED to 'false' (to avoid
+    signatures) or anything else (to check signatures)
+    
+    You may optionally specificy a COMMAND to run after the update (and
+    signature check, if any) is successful.
+
 
 
 This image will generate an SSH key on run and report it to the docker

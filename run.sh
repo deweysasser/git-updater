@@ -127,7 +127,7 @@ options are:
 -loop -- loop continously
 -source SOURCE -- set the source dir to SOURCE.  Currently ${SOURCE:-empty}${SOURCE:+'$SOURCE'}
 -signed -- if set, copy files from the latest signed tag.  Currently '$SIGNED'.
--target TARGET -- set the target dir to TARGET.  Currently '$TARGET'.
+-target TARGET -- set the target dir to TARGET.  Currently '${TARGET:-}'.
 -keys KEYS -- set the keys dir to KEYS.  Currently '$KEYS'.
 -sleep SLEEP -- number of seconds to sleep between polls.  Currently '$SLEEP'.
 -standbox SANDBOX -- the location of the git sandbox used to poll
