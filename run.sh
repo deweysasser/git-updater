@@ -33,14 +33,14 @@ check-signature() {
 	return 0
     fi
 	
-    tagname=$(eval git describe --abbrev=0 --tags origin/master | grep release | head -n 1)
+    tagname=$(eval git -C "$SANDBOX" describe --abbrev=0 --tags origin/master | grep release | head -n 1)
     echo "Checking tag name $tagname"
     if [ -z "$tagname" ] ; then
 	echo "No tag found"
 	return 1
     fi
 
-    git tag -v $tagname && git checkout $tagname
+    git -C "$SANDBOX" tag -v $tagname && git checkout $tagname
 }
 
 copy-files() {
@@ -62,16 +62,18 @@ runonce() {
 	fi
     fi
 
+    if ! check-signature; then
+	return
+    fi
+
     postupdateCommit=$(gitcommit)
 
     if [ "$startingCommit" == "$postupdateCommit" -a -d "$TARGET" ] ; then
 	return
     fi
 
-    if check-signature; then
-	copy-files
-	runcommand
-    fi
+    copy-files
+    runcommand
 }
 
 gitcommit() {
