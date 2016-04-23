@@ -2,7 +2,7 @@
 
 set -e -u
 
-sandbox=${SANDBOX:-$HOME/sandbox}
+SANDBOX=${SANDBOX:-$HOME/sandbox}
 LOOP=${LOOP:-false}
 SIGNED=${SIGNED:-false}
 SLEEP=${SLEEP:-60}
@@ -163,12 +163,12 @@ if [ -z "${TARGET:-}" ] ; then
     exit 1
 fi
 
-mkdir -p $sandbox $TARGET
+mkdir -p $SANDBOX $TARGET
 
 import-gpg-keys
 ensure-ssh-key
 
-cd $sandbox
+cd $SANDBOX
 
 if $LOOP ; then
     loop
