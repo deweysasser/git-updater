@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -e -u
+# Intentionally DO NOT set -e -- we want to keep running if at all possible
+set -u
 
 SANDBOX=${SANDBOX:-$HOME/sandbox}
 LOOP=${LOOP:-false}
