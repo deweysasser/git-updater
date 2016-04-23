@@ -47,6 +47,7 @@ copy-files() {
 }
 
 runonce() {
+    date
     startingCommit=$(gitcommit)
     if [ -d $SANDBOX/.git ] ; then
 	update-sandbox
@@ -98,6 +99,7 @@ import-gpg-keys() {
 }
 
 loop() {
+    runonce
     while sleep $SLEEP; do
 	runonce
     done
