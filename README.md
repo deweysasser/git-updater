@@ -27,7 +27,7 @@ Usage
     -target TARGET -- set the target dir to TARGET.  Currently ''.
     -keys KEYS -- set the keys dir to KEYS.  Currently ''.
     -sleep SLEEP -- number of seconds to sleep between polls.  Currently '60'.
-    -standbox SANDBOX -- the location of the git sandbox used to poll
+    -sandbox SANDBOX -- the location of the git sandbox used to poll
     -branch BRANCH -- branch of the git repository to clone and/or examine for signed tags
     -dir DIR -- directory within the repositor to copy to the TARGET
     
