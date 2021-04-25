@@ -1,10 +1,9 @@
-FROM debian:buster
+FROM alpine:latest
 MAINTAINER Dewey Sasser <dewey@deweysasser.com>
 
 ARG DUMB_INIT_VERSION=1.2.5
 # Purpose:  Periodically update a path
-RUN apt-get update
-RUN apt-get -y install git gnupg rsync wget
+RUN apk add  --no-cache git gnupg rsync wget bash openssh-client
 RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 && chmod +x /usr/local/bin/dumb-init
 ADD run.sh /run.sh
 ADD root /root
