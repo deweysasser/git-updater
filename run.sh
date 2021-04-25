@@ -187,7 +187,7 @@ ensure-ssh-key
 
 cd "$SANDBOX"
 
-if $LOOP ; then
+if [ "$LOOP" == "true" -o -r /run/secrets/kubernetes.io/serviceaccount/namespace ] ; then
     loop
 else
     runonce
