@@ -20,9 +20,15 @@ update-sandbox() {
 }
 
 ensure-ssh-key() {
-    if [ ! -f ~/.ssh/id_dsa ] ; then
-	ssh-keygen -t dsa -N "" -f ~/.ssh/id_dsa
-    fi
+  if [ -f ~/.ssh/id_rsa ] ; then
+    echo "Using id_rsa"
+  elif [ -f ~/.ssh/id_dsa ]; then
+      echo "Warning:  id_dsa no longer recommended for use"
+  else
+    ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+  fi
+  # Insurance
+  chmod -R og-rwx ~/.ssh
 }
 
 
