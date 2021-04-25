@@ -1,7 +1,7 @@
 .gitignore text
 .gitattributes text
 
-Dockerfile text
+Dockerfile text eol=nl
 docker-compose.yml text
 
 *.txt text
@@ -16,4 +16,5 @@ Makefile text
 *.h text
 *.hpp text
 *.pub text
+*.sh text eol=nl
 

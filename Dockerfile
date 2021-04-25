@@ -1,10 +1,11 @@
-FROM debian:jessie
-MAINTAINER Dewey Sasser <dewey@sasser.com>
+FROM debian:buster
+MAINTAINER Dewey Sasser <dewey@deweysasser.com>
+
+ARG DUMB_INIT_VERSION=1.2.5
 # Purpose:  Periodically update a path
 RUN apt-get update
 RUN apt-get -y install git gnupg rsync wget
-RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.0.1/dumb-init_1.0.1_amd64 && chmod +x /usr/local/bin/dumb-init
-
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 && chmod +x /usr/local/bin/dumb-init
 ADD run.sh /run.sh
 ADD root /root
 

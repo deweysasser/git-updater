@@ -1,7 +1,7 @@
 git-updater
 ===========
 
-Peridically update a directory from a git repository.
+Periodically update a directory from a git repository.
 
 This container is useful to maintain an up to date set of files in a
 directory (or volume of another container), without teaching another
