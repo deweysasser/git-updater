@@ -1,0 +1,5 @@
+[pull]
+	rebase = true
+[user]
+	name = Git Updater
+	email = updater@git-updater.example.com
