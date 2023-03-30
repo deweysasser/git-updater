@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.17.3
 MAINTAINER Dewey Sasser <dewey@deweysasser.com>
 
 ARG DUMB_INIT_VERSION=1.2.5
